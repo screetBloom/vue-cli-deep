@@ -291,6 +291,9 @@ module.exports = (api, options) => {
           }])
     }
 
+    console.log(' app.js >', api.resolve(options.outputDir))
+    console.log(' outputDir >', outputDir)
+    console.log(' outputFilename >', outputFilename)
     // copy static assets in public/
     const publicDir = api.resolve('public')
     if (!isLegacyBundle && fs.existsSync(publicDir)) {

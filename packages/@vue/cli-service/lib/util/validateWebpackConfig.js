@@ -9,6 +9,9 @@ module.exports = function validateWebpackConfig (
     : webpackConfig
 
   const actualTargetDir = singleConfig.output.path
+  // console.log(' actualTargetDir >', singleConfig.output)
+  // console.log(' api.resolve(options.outputDir) >', api.resolve(options.outputDir))
+  // console.log(actualTargetDir !== api.resolve(options.outputDir))
 
   if (actualTargetDir !== api.resolve(options.outputDir)) {
     // user directly modifies output.path in configureWebpack or chainWebpack.

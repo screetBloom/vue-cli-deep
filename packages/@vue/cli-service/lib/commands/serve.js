@@ -72,9 +72,13 @@ module.exports = (api, options) => {
 
     // resolve webpack config
     const webpackConfig = api.resolveWebpackConfig()
+    // console.log(' hhh -> webpackConfig >', webpackConfig)
+    // webpackConfig.output.path = '/Users/chenwei/workpace/rome/客服/rome-test-chen-4/build'
 
     // check for common config errors
     validateWebpackConfig(webpackConfig, api, options)
+
+    // return 0;
 
     // load user devServer options with higher priority than devServer
     // in webpack config
@@ -93,6 +97,8 @@ module.exports = (api, options) => {
 
     // entry arg
     const entry = args._[0]
+    console.log(' webpackConfig.entry >', webpackConfig.entry)
+    // return;
     if (entry) {
       webpackConfig.entry = {
         app: api.resolve(entry)
@@ -161,6 +167,7 @@ module.exports = (api, options) => {
     // create compiler
     const compiler = webpack(webpackConfig)
 
+    console.log('compiler webpackConfig >', webpackConfig)
     // create server
     const server = new WebpackDevServer(compiler, Object.assign({
       logLevel: 'silent',

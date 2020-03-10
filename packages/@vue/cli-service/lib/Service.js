@@ -72,7 +72,11 @@ module.exports = class Service {
 
     debug('vue:project-config')(this.projectOptions)
 
+    // console.log(' init apply ---------------------------->')
+    // console.log(this.plugins)
+    // console.log(' init apply ----------------------------!')
     // apply plugins.
+    // console.log('this.plugins >', this.plugins)
     this.plugins.forEach(({ id, apply }) => {
       if (this.pluginsToSkip.has(id)) return
       apply(new PluginAPI(id, this), this.projectOptions)
@@ -142,7 +146,15 @@ module.exports = class Service {
   resolvePlugins (inlinePlugins, useBuiltIn) {
     const idToPlugin = id => ({
       id: id.replace(/^.\//, 'built-in:'),
-      apply: require(id)
+      apply: (function () {
+        if (id.indexOf('./') >= 0) {
+          return require(id)
+        } else {
+          const packagePath = path.join(process.cwd(), `./node_modules/${id}`)
+          // console.log('apply >', id, packagePath)
+          return loadModule(id, packagePath, true)
+        }
+      })()
     })
 
     let plugins
@@ -159,31 +171,34 @@ module.exports = class Service {
       './config/app'
     ].map(idToPlugin)
 
+    // console.log(' here >', builtInPlugins)
     if (inlinePlugins) {
       plugins = useBuiltIn !== false
         ? builtInPlugins.concat(inlinePlugins)
         : inlinePlugins
     } else {
-      const projectPlugins = Object.keys(this.pkg.devDependencies || {})
-        .concat(Object.keys(this.pkg.dependencies || {}))
-        .filter(isPlugin)
-        .map(id => {
-          if (
-            this.pkg.optionalDependencies &&
+      // console.log(' here >', builtInPlugins)
+      const res1 = Object.keys(this.pkg.devDependencies || {}).concat(Object.keys(this.pkg.dependencies || {})).filter(isPlugin)
+      // console.log('res1 >', res1)
+      const projectPlugins = res1.map(id => {
+        if (
+          this.pkg.optionalDependencies &&
             id in this.pkg.optionalDependencies
-          ) {
-            let apply = () => {}
-            try {
-              apply = require(id)
-            } catch (e) {
-              warn(`Optional dependency ${id} is not installed.`)
-            }
-
-            return { id, apply }
-          } else {
-            return idToPlugin(id)
+        ) {
+          console.log('22')
+          let apply = () => {}
+          try {
+            apply = require(id)
+          } catch (e) {
+            warn(`Optional dependency ${id} is not installed.`)
           }
-        })
+
+          return { id, apply }
+        } else {
+          // console.log('options else  >', id, idToPlugin)
+          return idToPlugin(id)
+        }
+      })
       plugins = builtInPlugins.concat(projectPlugins)
     }
 
@@ -211,6 +226,9 @@ module.exports = class Service {
     // --skip-plugins arg may have plugins that should be skipped during init()
     this.setPluginsToSkip(args)
 
+    // console.log(' command >', name, this.commands[name])
+    // console.log(' plugins >', this.plugins)
+
     // load env variables, load user config, apply plugins
     this.init(mode)
 
@@ -227,13 +245,17 @@ module.exports = class Service {
       rawArgv.shift()
     }
     const { fn } = command
+    console.log('fn start >', args)
+    console.log(' here ------------------------------------------------------------------->')
     return fn(args, rawArgv)
   }
 
   resolveChainableWebpackConfig () {
+    // console.log('resolveChainableWebpackConfig -------------------------->')
     const chainableConfig = new Config()
     // apply chains
     this.webpackChainFns.forEach(fn => fn(chainableConfig))
+    // console.log(' webpackChainFns >', this.webpackChainFns)
     return chainableConfig
   }
 
@@ -255,6 +277,8 @@ module.exports = class Service {
         config = merge(config, fn)
       }
     })
+    // console.log(config)
+    // console.log('config ---------------------->')
 
     // #2206 If config is merged by merge-webpack, it discards the __ruleNames
     // information injected by webpack-chain. Restore the info so that

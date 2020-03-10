@@ -57,6 +57,10 @@ class GeneratorAPI {
     this._entryFile = undefined
   }
 
+  console (param) {
+    console.log(`here >${param}`)
+  }
+
   /**
    * Resolves the data when rendering templates.
    *
@@ -263,9 +267,11 @@ class GeneratorAPI {
    * @param {object} [ejsOptions] - options for ejs.
    */
   render (source, additionalData = {}, ejsOptions = {}) {
+    // console.log(' source >', source, additionalData, ejsOptions)
     const baseDir = extractCallDir()
     if (isString(source)) {
       source = path.resolve(baseDir, source)
+      console.log(baseDir, ' isString >', source)
       this._injectFileMiddleware(async (files) => {
         const data = this._resolveData(additionalData)
         const globby = require('globby')
@@ -291,6 +297,7 @@ class GeneratorAPI {
         }
       })
     } else if (isObject(source)) {
+      // console.log('isObject >')
       this._injectFileMiddleware(files => {
         const data = this._resolveData(additionalData)
         for (const targetPath in source) {

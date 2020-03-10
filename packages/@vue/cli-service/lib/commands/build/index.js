@@ -11,6 +11,7 @@ const buildModes = {
   'wc-async': 'web component (async)'
 }
 
+// 多见于修改webpack配置
 const modifyConfig = (config, fn) => {
   if (Array.isArray(config)) {
     config.forEach(c => fn(c))
@@ -46,10 +47,12 @@ module.exports = (api, options) => {
       }
     }
     args.entry = args.entry || args._[0]
+    // 非默认情况要挂载对应的入口
     if (args.target !== 'app') {
       args.entry = args.entry || 'src/App.vue'
     }
 
+    // console.log('entry >', args.entry)
     process.env.VUE_CLI_BUILD_TARGET = args.target
     if (args.modern && args.target === 'app') {
       process.env.VUE_CLI_MODERN_MODE = true
@@ -108,7 +111,9 @@ async function build (args, api, options) {
 
   log()
   const mode = api.service.mode
+  // 应用模式构建
   if (args.target === 'app') {
+    // 现代版本还是旧浏览器版本
     const bundleTag = args.modern
       ? args.modernBuild
         ? `modern bundle `
