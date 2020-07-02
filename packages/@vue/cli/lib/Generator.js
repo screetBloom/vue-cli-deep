@@ -144,6 +144,9 @@ module.exports = class Generator {
     this.postProcessFilesCbs = []
 
     // apply generators from plugins
+    console.log('cwd --------------------------------------------------- >')
+    console.log(process.cwd())
+    // return;
     for (const plugin of this.plugins) {
       const { id, apply, options } = plugin
       const api = new GeneratorAPI(id, this, options, rootOptions)
@@ -272,6 +275,8 @@ module.exports = class Generator {
     // all paths are converted to use / instead of \
     normalizeFilePaths(files)
 
+    console.log(' ------------------- import ------------------ ')
+    console.log(this.imports)
     // handle imports and root option injections
     Object.keys(files).forEach(file => {
       let imports = this.imports[file]
@@ -298,6 +303,7 @@ module.exports = class Generator {
     for (const postProcess of this.postProcessFilesCbs) {
       await postProcess(files)
     }
+    console.log(' ------------------- resolveFiles end ------------------ ')
     debug('vue:cli-files')(this.files)
   }
 

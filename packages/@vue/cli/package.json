@@ -3,7 +3,7 @@
   "version": "4.2.2",
   "description": "Command line interface for rapid Vue.js development",
   "bin": {
-    "vue": "bin/vue.js"
+    "vue2": "bin/vue.js"
   },
   "repository": {
     "type": "git",

@@ -1,6 +1,9 @@
 module.exports = (api, args, options) => {
+  console.log('也执行到我了 ～')
   const config = api.resolveChainableWebpackConfig()
+  console.log('3 ～')
   const targetDir = api.resolve(args.dest || options.outputDir)
+  console.log('4 ～')
 
   // respect inline build destination in copy plugin
   if (args.dest && config.plugins.has('copy')) {
@@ -36,6 +39,10 @@ module.exports = (api, args, options) => {
     }
   }
 
+  console.log(' --------------------- resolveAppConfig start ------------------------ ')
+  console.log(args.dest, args.modern)
+  // console.log(config)
+  console.log(' --------------------- resolveAppConfig end ------------------------ ')
   const rawConfig = api.resolveWebpackConfig(config)
 
   // respect inline entry

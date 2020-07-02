@@ -18,6 +18,8 @@ function genTranspileDepRegex (transpileDependencies) {
 
 module.exports = (api, options) => {
   const useThreads = process.env.NODE_ENV === 'production' && !!options.parallel
+  console.log(require.resolve.paths('@vue/cli-service'))
+  console.log(`-------------------------------- require.resolve('@vue/cli-service')  ----------------------------------`)
   const cliServicePath = path.dirname(require.resolve('@vue/cli-service'))
   const transpileDepRegex = genTranspileDepRegex(options.transpileDependencies)
 

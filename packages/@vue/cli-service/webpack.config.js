@@ -5,6 +5,7 @@ let service = process.VUE_CLI_SERVICE
 
 if (!service || process.env.VUE_CLI_API_MODE) {
   const Service = require('./lib/Service')
+  // console.log('hello ------------------------------------------->')
   service = new Service(process.env.VUE_CLI_CONTEXT || process.cwd())
   service.init(process.env.VUE_CLI_MODE || process.env.NODE_ENV)
 }

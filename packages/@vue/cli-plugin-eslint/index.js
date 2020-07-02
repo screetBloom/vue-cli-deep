@@ -1,6 +1,8 @@
 const path = require('path')
 
 module.exports = (api, options) => {
+  console.log('------------ lint start -------------')
+  console.log('options.lintOnSave >', options.lintOnSave)
   if (options.lintOnSave) {
     const extensions = require('./eslintOptions').extensions(api)
     // Use loadModule to allow users to customize their ESLint dependency version.
@@ -34,6 +36,9 @@ module.exports = (api, options) => {
       const allWarnings = lintOnSave === true || lintOnSave === 'warning'
       const allErrors = lintOnSave === 'error'
 
+      console.log(' \n ----------------------- lint chainWebpack ----------------------------- ')
+      console.log('resolve >', require.resolve('@vue/cli-service'))
+      console.log(`path.dirname(require.resolve('@vue/cli-service')) >`, path.dirname(require.resolve('@vue/cli-service')))
       webpackConfig.module
         .rule('eslint')
           .pre()
@@ -59,6 +64,7 @@ module.exports = (api, options) => {
             })
     })
   }
+  console.log('------------ lint end -------------')
 
   api.registerCommand(
     'lint',
@@ -78,6 +84,7 @@ module.exports = (api, options) => {
         'For more options, see https://eslint.org/docs/user-guide/command-line-interface#options'
     },
     args => {
+      // console.log('args >', args)
       require('./lint')(args, api)
     }
   )

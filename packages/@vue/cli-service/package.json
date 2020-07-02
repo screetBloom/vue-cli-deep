@@ -5,7 +5,7 @@
   "main": "lib/Service.js",
   "typings": "types/index.d.ts",
   "bin": {
-    "vue-cli-service": "bin/vue-cli-service.js"
+    "vue2-cli-service": "bin/vue-cli-service.js"
   },
   "repository": {
     "type": "git",

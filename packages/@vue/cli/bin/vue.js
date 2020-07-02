@@ -67,6 +67,10 @@ program
   .option('--skipGetStarted', 'Skip displaying "Get started" instructions')
   .action((name, cmd) => {
     const options = cleanArgs(cmd)
+    console.log(name)
+    console.log(cmd)
+    // console.log('options >', options)
+    return;
 
     if (minimist(process.argv.slice(3))._.length > 1) {
       console.log(chalk.yellow('\n Info: You provided more than one argument. The first one will be used as the app\'s name, the rest are ignored.'))

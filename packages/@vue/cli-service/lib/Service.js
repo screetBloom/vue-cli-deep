@@ -35,6 +35,8 @@ module.exports = class Service {
     // resolve the default mode to use for each command
     // this is provided by plugins as module.exports.defaultModes
     // so we can get the information without actually applying the plugin.
+    console.log(' -------------------------- ')
+    console.log(this.plugins)
     this.modes = this.plugins.reduce((modes, { apply: { defaultModes }}) => {
       return Object.assign(modes, defaultModes)
     }, {})
@@ -61,6 +63,7 @@ module.exports = class Service {
 
     // load mode .env
     if (mode) {
+      console.log('here if (mode) >', mode)
       this.loadEnv(mode)
     }
     // load base .env
@@ -76,11 +79,14 @@ module.exports = class Service {
     // console.log(this.plugins)
     // console.log(' init apply ----------------------------!')
     // apply plugins.
+    console.log('  ----------------------- plugins ---------------------   ')
     // console.log('this.plugins >', this.plugins)
     this.plugins.forEach(({ id, apply }) => {
+      console.log(' this.pluginsToSkip >', this.pluginsToSkip)
       if (this.pluginsToSkip.has(id)) return
       apply(new PluginAPI(id, this), this.projectOptions)
     })
+    console.log('  ----------------------- plugins end ---------------------   ')
 
     // apply webpack configs from project config file
     if (this.projectOptions.chainWebpack) {
@@ -109,8 +115,12 @@ module.exports = class Service {
       }
     }
 
+    // console.log(' -------------------loadEnv start------------------------ ')
+    // console.log(require.main)
     load(localPath)
     load(basePath)
+    // console.log('process.env >', process.env)
+    // console.log(' -------------------loadEnv end------------------------ ')
 
     // by default, NODE_ENV and BABEL_ENV are set to "development" unless mode
     // is production or test. However the value in .env files will take higher
@@ -228,12 +238,21 @@ module.exports = class Service {
 
     // console.log(' command >', name, this.commands[name])
     // console.log(' plugins >', this.plugins)
+    // console.log('modes >', this.modes)
 
     // load env variables, load user config, apply plugins
     this.init(mode)
+    // console.log('------------------------------------')
+    // console.log('mode >', mode);
+    // console.log('this.modes >', this.modes);
+    // return;
 
     args._ = args._ || []
+    // console.log('----------------------- Vue commands start ---------------------------')
+    // console.log(this.commands)
+    // console.log('----------------------- Vue commands end ---------------------------')
     let command = this.commands[name]
+    // console.log('name >', name, command)
     if (!command && name) {
       error(`command "${name}" does not exist.`)
       process.exit(1)
@@ -245,8 +264,6 @@ module.exports = class Service {
       rawArgv.shift()
     }
     const { fn } = command
-    console.log('fn start >', args)
-    console.log(' here ------------------------------------------------------------------->')
     return fn(args, rawArgv)
   }
 
@@ -263,6 +280,7 @@ module.exports = class Service {
     if (!this.initialized) {
       throw new Error('Service must call init() before calling resolveWebpackConfig().')
     }
+    console.log(' \n -------------- Vue resolveWebpackConfig执行了 --------------')
     // get raw config
     let config = chainableConfig.toConfig()
     const original = config

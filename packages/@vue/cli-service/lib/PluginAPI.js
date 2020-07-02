@@ -15,7 +15,7 @@ class PluginAPI {
   constructor (id, service) {
     this.id = id
     this.service = service
-    console.log(' vue cli pluginApi >')
+    // console.log(' vue cli pluginApi >')
   }
 
   get version () {
@@ -96,6 +96,7 @@ class PluginAPI {
    * @param {function} fn
    */
   chainWebpack (fn) {
+    console.log('chainWebpack >', this.id)
     this.service.webpackChainFns.push(fn)
   }
 
@@ -206,6 +207,8 @@ class PluginAPI {
     })
 
     const cacheIdentifier = hash(variables)
+    // console.log(' here ------>', cacheDirectory, cacheIdentifier)
+    // process.exit(1)
     return { cacheDirectory, cacheIdentifier }
   }
 }

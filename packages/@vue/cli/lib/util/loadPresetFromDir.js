@@ -8,8 +8,7 @@ module.exports = async function loadPresetFromDir (dir) {
   }
   const preset = await fs.readJson(presetPath)
 
-  // if the preset dir contains generator.js or generator/index.js, we will inject it as a hidden
-  // plugin so it will be invoked by the generator.
+  // 如果预设目录包含generator.js或generator / index.js, 将其作为插件注入
   const hasGenerator = fs.existsSync(path.join(dir, 'generator.js')) || fs.existsSync(path.join(dir, 'generator/index.js'))
   if (hasGenerator) {
     (preset.plugins || (preset.plugins = {}))[dir.replace(/[\/]$/, '')] = {

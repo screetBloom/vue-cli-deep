@@ -91,6 +91,9 @@ module.exports = class Creator extends EventEmitter {
       }
     }
 
+    // console.log('-------------------------------------')
+    // console.log(cliOptions)
+    // return
     // clone before mutating
     preset = cloneDeep(preset)
     // inject core service
@@ -137,6 +140,7 @@ module.exports = class Creator extends EventEmitter {
       version: '0.1.0',
       private: true,
       devDependencies: {},
+      eslintConfig: { rules: {} },
       ...resolvePkg(context)
     }
     const deps = Object.keys(preset.plugins)
@@ -185,6 +189,8 @@ module.exports = class Creator extends EventEmitter {
     log(`🚀  Invoking generators...`)
     this.emit('creation', { event: 'invoking-generators' })
     const plugins = await this.resolvePlugins(preset.plugins)
+    console.log(' vue2 create ----------------------------------------- > ')
+    console.log(context)
     const generator = new Generator(context, {
       pkg,
       plugins,
@@ -320,6 +326,9 @@ module.exports = class Creator extends EventEmitter {
   async resolvePreset (name, clone) {
     let preset
     const savedPresets = loadOptions().presets || {}
+    // console.log(' resolvePreset name > ', name)
+    // console.log(' resolvePreset savedPresets > ', savedPresets)
+    // return;
 
     if (name in savedPresets) {
       preset = savedPresets[name]

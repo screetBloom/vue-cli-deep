@@ -111,6 +111,7 @@ async function build (args, api, options) {
 
   log()
   const mode = api.service.mode
+  console.log('\n ---------------- mode -------------------')
   // 应用模式构建
   if (args.target === 'app') {
     // 现代版本还是旧浏览器版本
@@ -121,8 +122,10 @@ async function build (args, api, options) {
       : ``
     logWithSpinner(`Building ${bundleTag}for ${mode}...`)
   } else {
+    // 获取构建目标 lib || wc || wc-async
     const buildMode = buildModes[args.target]
     if (buildMode) {
+      // 不同的构建版本 myLib.common.js，myLib.umd.js，myLib.umd.min.js
       const additionalParams = buildMode === 'library' ? ` (${args.formats})` : ``
       logWithSpinner(`Building for ${mode} as ${buildMode}${additionalParams}...`)
     } else {
@@ -141,26 +144,39 @@ async function build (args, api, options) {
   // resolve raw webpack config
   let webpackConfig
   if (args.target === 'lib') {
+    // 加载构建目标为 lib 的 webpack 配置
     webpackConfig = require('./resolveLibConfig')(api, args, options)
   } else if (
     args.target === 'wc' ||
     args.target === 'wc-async'
   ) {
+    // 加载构建目标为 wc || wc-async 的 webpack 配置
     webpackConfig = require('./resolveWcConfig')(api, args, options)
   } else {
+    // 默认的应用构建目标
+    let strArr = []
+    api.service.webpackChainFns.forEach(fn => {
+      strArr.push(fn.toString())
+    })
+    // fs.writeFileSync(path.join(process.cwd(), './test/vue.js'), strArr, )
+    // console.log('\n 执行到Vome了 \n', strArr)
     webpackConfig = require('./resolveAppConfig')(api, args, options)
   }
 
+  console.log(`-------------- ${args.target} -------------------`)
+  return;
   // check for common config errors
   validateWebpackConfig(webpackConfig, api, options, args.target)
 
   if (args.watch) {
+    // 如果是 --watch模式，设置webpackConfig.wathc 为true
     modifyConfig(webpackConfig, config => {
       config.watch = true
     })
   }
 
-  // Expose advanced stats
+  // 公开高级统计信息
+  // 如果是 --dashboard模式，添加分析插件
   if (args.dashboard) {
     const DashboardPlugin = require('../../webpack/DashboardPlugin')
     modifyConfig(webpackConfig, config => {
@@ -172,6 +188,7 @@ async function build (args, api, options) {
     })
   }
 
+  // 如果是 --report模式，添加 webpack-bundle-analyzer 插件
   if (args.report || args['report-json']) {
     const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
     modifyConfig(webpackConfig, config => {
@@ -189,10 +206,16 @@ async function build (args, api, options) {
     })
   }
 
+  // 如果 --clean，则每次构建前清空构建文件夹
   if (args.clean) {
     await fs.remove(targetDir)
   }
 
+  // console.log('webpackConfig ------------------------------->')
+  // console.log(webpackConfig)
+  // process.exit(1)
+  // return;
+  // return false;
   return new Promise((resolve, reject) => {
     webpack(webpackConfig, (err, stats) => {
       stopSpinner(false)

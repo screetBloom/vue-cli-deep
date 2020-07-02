@@ -44,6 +44,7 @@ class GeneratorAPI {
     this.generator = generator
     this.options = options
     this.rootOptions = rootOptions
+    console.log(' ----------------- romeGeneratorAPI ----------------- ')
 
     /* eslint-disable no-shadow */
     this.pluginsData = generator.plugins
@@ -274,6 +275,8 @@ class GeneratorAPI {
       console.log(baseDir, ' isString >', source)
       this._injectFileMiddleware(async (files) => {
         const data = this._resolveData(additionalData)
+        console.log(' --------------------- ejs data -------------------------- ')
+        console.log(' additionalData >', data)
         const globby = require('globby')
         const _files = await globby(['**/*'], { cwd: source })
         for (const rawPath of _files) {

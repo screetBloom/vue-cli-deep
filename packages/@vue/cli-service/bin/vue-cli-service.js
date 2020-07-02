@@ -33,7 +33,7 @@ const args = require('minimist')(rawArgv, {
 })
 const command = args._[0]
 
-console.log('vue-service >', command, args)
+// console.log('vue-service >', command, args, rawArgv)
 service.run(command, args, rawArgv).catch(err => {
   error(err)
   process.exit(1)

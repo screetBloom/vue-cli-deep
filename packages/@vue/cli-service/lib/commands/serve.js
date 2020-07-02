@@ -97,7 +97,6 @@ module.exports = (api, options) => {
 
     // entry arg
     const entry = args._[0]
-    console.log(' webpackConfig.entry >', webpackConfig.entry)
     // return;
     if (entry) {
       webpackConfig.entry = {
@@ -167,7 +166,15 @@ module.exports = (api, options) => {
     // create compiler
     const compiler = webpack(webpackConfig)
 
-    console.log('compiler webpackConfig >', webpackConfig)
+    // console.log('compiler webpackConfig >', webpackConfig)
+    // return ; 
+    console.log(' ------------------ start --------------------- ')
+    console.log(' webpackConfig.entry >', webpackConfig.entry)
+    // console.log(api.service.plugins)
+    console.log('webpackConfig ------------------------------->')
+    // console.log(webpackConfig)
+    // process.exit(1)
+    // return;
     // create server
     const server = new WebpackDevServer(compiler, Object.assign({
       logLevel: 'silent',
@@ -235,6 +242,8 @@ module.exports = (api, options) => {
         }
       })
     }
+    // console.log('----------------------------------------->')
+    // return;
 
     return new Promise((resolve, reject) => {
       // log instructions & open browser on first compilation complete
